@@ -8,14 +8,17 @@ import Colors from '../constants/Colors';
     screen:{
         flex: 1,
         padding:20,
-        alignItems: "center",
+        alignItems: 'center',
         backgroundColor: Colors.light
     },
     full:{
       flex: 1,
       padding:10,
-      justifyContent:"center",
-      alignItems: "center",
+      justifyContent:'center',
+      alignItems: 'center',
+    },
+    textCenter:{
+      textAlign: 'center'
     },
     textHighlight:{
       color: Colors.primary,

@@ -24,7 +24,6 @@ const ShopScreen = (props) => {
 
   let products = useSelector(state => state.productsReducer.shopProducts);
   const renderProductItem = (itemData) =>{
-    console.log(itemData.item.id);
     return (<ProductItem 
               navigation={props.navigation} 
               id={itemData.item.id} 
