@@ -11,6 +11,16 @@ import Colors from '../constants/Colors';
         alignItems: 'center',
         backgroundColor: Colors.light
     },
+    row:{
+      flexDirection: 'row',
+      width: '100%',
+      padding: 10,
+      backgroundColor: '#fff',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 20
+
+    }, 
     full:{
       flex: 1,
       padding:10,

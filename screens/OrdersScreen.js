@@ -10,7 +10,12 @@ import {HeaderButton} from '../components/HeaderButton';
 // custom imports
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
-const OrdersScreen = () => {
+//import redux
+import {useSelector} from 'react-redux';
+
+const OrdersScreen = (props) => {
+  const orders = useSelector((state) => state.orderReducer.orders);
+  console.log(orders);
   return (
     <View><Text>OI!</Text></View>
   );

@@ -14,13 +14,15 @@ import {Provider} from 'react-redux';
 // import reducers
 import ProductsReducer from './store/reducers/products';
 import CartReducer from './store/reducers/cart';
+import OrderReducer from './store/reducers/orders';
 
 
 enableScreens();
 
 const rootReducer = combineReducers({
   productsReducer: ProductsReducer,
-  cartReducer: CartReducer
+  cartReducer: CartReducer,
+  orderReducer: OrderReducer
 });
 
 const store = createStore(rootReducer);

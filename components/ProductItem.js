@@ -27,9 +27,9 @@ const ProductItem = (props) => {
                 </ImageBackground>
             </View>
             <View style={styles.cardDetail}>
-                <Button title='More' onPress={()=> navigation.navigate({routeName:'ProductsDetailRoute', params:{productId: id, productTitle:title}})}/>
+                <Button title='More' color={Colors.primary} onPress={()=> navigation.navigate({routeName:'ProductsDetailRoute', params:{productId: id, productTitle:title}})}/>
                 <Text>$ {price}</Text>
-                <Button title='Cart' onPress={() => props.onAdd(id, title, price)}/>
+                <Button title='Cart' color={Colors.primary} onPress={() => props.onAdd(id, title, price)}/>
             </View>
             
         </View>
