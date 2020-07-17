@@ -15,7 +15,7 @@ import Colors from '../constants/Colors';
 
 // redux
 import {useDispatch} from 'react-redux';
-import {addToCart} from '../store/actions/products';
+import {addToCart} from '../store/actions/cart';
 
 const ProductItem = (props) => {
     const id = props.id;
@@ -26,7 +26,7 @@ const ProductItem = (props) => {
 
     const dispatch = useDispatch();
     const addToCartHandler = () => {  
-        dispatch(addToCart(id));  
+        dispatch(addToCart(id, title, price));  
         navigation.navigate({routeName:'CartRoute'});
     };
 

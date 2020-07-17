@@ -14,17 +14,21 @@ import Colors from '../constants/Colors';
 //custom import
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
+
 const CartItem = (props) => {
-    const deleteFromCartHandler = () => {
-        console.log(props.id);
-    }
+    const id = props.id;
+    const title = props.title;
+    const price = props.price;
+    const total = props.total;
+    const quantity = props.quantity;
 
     return (
         <View style={styles.container}>
-            <Text>{props.quantity}</Text>
-            <Text>{props.title}</Text>
-            <Text>{props.priceUnity * props.quantity}</Text>
-            <TouchableOpacity onPress={deleteFromCartHandler}>
+            <Text>{quantity}</Text>
+            <Text>{title}</Text>
+            <Text>{total}</Text>
+            <TouchableOpacity onPress={() => props.onRemove(id)}>
                 <Icon name="minus" size={23} color="#ccc" />
             </TouchableOpacity>
         </View>
