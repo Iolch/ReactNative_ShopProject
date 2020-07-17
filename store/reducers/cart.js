@@ -16,11 +16,11 @@ const CartReducer = (state = initialState, action) => {
                                                         state.items[action.productId].total + state.items[action.productId].price,
                                                     );
 
-                
-                return {...state, items:{...state.items, [action.productId]: updatedCartItem}, totalAmount: state.totalAmount + updatedCartItem.price}
+                return {...state, 
+                        items:{...state.items, [action.productId]: updatedCartItem},
+                        totalAmount: state.totalAmount + updatedCartItem.price}
             }else{
                 const newCartItem = new CartItem(1, action.price, action.title, action.price);
-                let temp = state.items
                 return {...state, items:{...state.items, [action.productId]: newCartItem}, totalAmount: state.totalAmount + action.price}
             }
 
@@ -36,15 +36,11 @@ const CartReducer = (state = initialState, action) => {
                 return {...state, items:{...state.items, [action.productId]: updatedCartItem}, totalAmount: state.totalAmount - updatedCartItem.price}
             }else{
                 const updatedCartItems = state.items;
-                const removeProduct = updatedCartItems[action.productId];
+                const removedProduct = updatedCartItems[action.productId];
                 delete updatedCartItems[action.productId];
-                return {...state, items: updatedCartItems, totalAmount: state.totalAmount - removeProduct.price}
+                return {...state, items: updatedCartItems, totalAmount: state.totalAmount - removedProduct.price}
             
             }
-            
-
-            
-
         default: return state;
     }
     return state;

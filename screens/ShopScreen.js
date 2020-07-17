@@ -18,11 +18,18 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
 
 // redux
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {addToCart} from '../store/actions/cart';
 
 const ShopScreen = (props) => {
 
   let products = useSelector(state => state.productsReducer.shopProducts);
+  const dispatch = useDispatch();
+  const addToCartHandler = (id, title, price) => {  
+      dispatch(addToCart(id, title, price));  
+      props.navigation.navigate({routeName:'CartRoute'});
+  };
+
   const renderProductItem = (itemData) =>{
     return (<ProductItem 
               navigation={props.navigation} 
@@ -30,6 +37,7 @@ const ShopScreen = (props) => {
               price={itemData.item.price} 
               title={itemData.item.title} 
               image={itemData.item.imageUrl}
+              onAdd={(id, title, price) => addToCartHandler(id, title, price)}
               />);
   };
   return (

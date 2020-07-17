@@ -16,18 +16,20 @@ import { removeFromCart } from '../store/actions/cart';
 const CartScreen = (props) => {
   const products = useSelector(state => {
     const transformedCardItems = [];
-    for(const key in state.cartReducer.items){
-      transformedCardItems.push({
-        id: key,
-        title: state.cartReducer.items[key].title,
-        price: state.cartReducer.items[key].price,
-        quantity: state.cartReducer.items[key].quantity,
-        total: state.cartReducer.items[key].total,
-      });
-      return transformedCardItems;
-    }
+    
+    Object.entries(state.cartReducer.items).forEach(([key, item]) => {
+        transformedCardItems.push({
+          id: key,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          total: item.total,
+        });
+    });
+    return transformedCardItems;
   });
-
+ 
+  const totalAmount = useSelector(state => {state.cartReducer.totalAmount});
   
   const dispatch = useDispatch();
 
@@ -49,9 +51,9 @@ const CartScreen = (props) => {
     );
   }
   return (
-    // <View></View>
-    <FlatList keyExtractor={(item,index) => item.id} data={products} renderItem={renderCartProduct}/>
-  );
+   
+      <FlatList keyExtractor={(item,index) => item.id} data={products} renderItem={renderCartProduct}/>
+    );
 };
 
 const styles = StyleSheet.create({

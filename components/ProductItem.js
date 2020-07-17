@@ -13,22 +13,12 @@ import {
 import DefaultStyle from '../constants/DefaultStyle';
 import Colors from '../constants/Colors';
 
-// redux
-import {useDispatch} from 'react-redux';
-import {addToCart} from '../store/actions/cart';
-
 const ProductItem = (props) => {
     const id = props.id;
     const title = props.title;
     const price = props.price;
     const image = props.image;
     const navigation = props.navigation;
-
-    const dispatch = useDispatch();
-    const addToCartHandler = () => {  
-        dispatch(addToCart(id, title, price));  
-        navigation.navigate({routeName:'CartRoute'});
-    };
 
     return (
         <View style={styles.card}>
@@ -39,7 +29,7 @@ const ProductItem = (props) => {
             <View style={styles.cardDetail}>
                 <Button title='More' onPress={()=> navigation.navigate({routeName:'ProductsDetailRoute', params:{productId: id, productTitle:title}})}/>
                 <Text>$ {price}</Text>
-                <Button title='Cart' onPress={addToCartHandler}/>
+                <Button title='Cart' onPress={() => props.onAdd(id, title, price)}/>
             </View>
             
         </View>
