@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FlatList,
   StyleSheet,
   Text,
   View,
@@ -7,6 +8,8 @@ import {
 
 // components imports
 import {HeaderButton} from '../components/HeaderButton';
+import OrderItem from '../components/OrderItem';
+
 // custom imports
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 
@@ -15,9 +18,17 @@ import {useSelector} from 'react-redux';
 
 const OrdersScreen = (props) => {
   const orders = useSelector((state) => state.orderReducer.orders);
-  console.log(orders);
+
+  const renderOrderItem = (itemData) =>{
+    return (<OrderItem 
+              id={itemData.item.id}
+              date={itemData.item.date}
+              items={itemData.item.items}
+              totalAmount={itemData.item.totalAmount}/>);
+  };
+
   return (
-    <View><Text>OI!</Text></View>
+    <FlatList data={orders} renderItem={renderOrderItem}/>
   );
 };
 

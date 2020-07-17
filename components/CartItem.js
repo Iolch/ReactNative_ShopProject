@@ -22,15 +22,20 @@ const CartItem = (props) => {
     const price = props.price;
     const total = props.total;
     const quantity = props.quantity;
+    let removeButton;
 
+    if(props.canRemove){
+        removeButton = (<TouchableOpacity onPress={() => props.onRemove(id)}>
+                            <Icon name="minus" size={23} color="#ccc" />
+                        </TouchableOpacity>);
+    } 
+    
     return (
         <View style={styles.container}>
             <Text>{quantity}</Text>
             <Text>{title}</Text>
             <Text>{total}</Text>
-            <TouchableOpacity onPress={() => props.onRemove(id)}>
-                <Icon name="minus" size={23} color="#ccc" />
-            </TouchableOpacity>
+            {removeButton}
         </View>
     );
 };

@@ -74,6 +74,7 @@ const CartScreen = (props) => {
         quantity={itemData.item.quantity}
         price={itemData.item.price} 
         total = {itemData.item.total}
+        canRemove = {true}
         onRemove = {(productId) => deleteFromCartHandler(productId)}
       />
       
