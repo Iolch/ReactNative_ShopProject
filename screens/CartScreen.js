@@ -100,7 +100,7 @@ const CartScreen = (props) => {
   return (
       <View>
         <View style={DefaultStyle.row}>
-          <Text style={DefaultStyle.textHighlight}>Total: {totalAmount}</Text>
+          <Text style={DefaultStyle.textHighlight}>Total: {Math.round(totalAmount.toFixed(2)*100)/100}</Text>
           <Button color={Colors.secondary} title='Place Order' onPress={placeOrderHandler}/>
         </View>
         {content}

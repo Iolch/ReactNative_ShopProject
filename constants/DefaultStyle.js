@@ -8,7 +8,6 @@ import Colors from '../constants/Colors';
     screen:{
         flex: 1,
         padding:20,
-        alignItems: 'center',
         backgroundColor: Colors.light
     },
     row:{
