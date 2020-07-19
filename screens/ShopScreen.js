@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
+  ActivityIndicator,  //built-in spinner
   Button,
   FlatList,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 
@@ -22,9 +24,14 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 // redux
 import {useSelector, useDispatch} from 'react-redux';
 import {addToCart} from '../store/actions/cart';
+import {fetchProducts} from '../store/actions/products';
+
 
 const ShopScreen = (props) => {
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState('');
+  
   let products = useSelector(state => state.productsReducer.shopProducts);
   const dispatch = useDispatch();
   const addToCartHandler = (id, title, price) => {  
@@ -49,6 +56,60 @@ const ShopScreen = (props) => {
               </ProductItem>
             );
   };
+
+  const loadProducts = useCallback(async () => {  //again, we could use then/catch in here
+    setLoadingError(null);
+    setIsLoading(true);
+    try{
+      await dispatch(fetchProducts());
+    }catch(err){
+      setLoadingError(err.message);
+    }
+    setIsLoading(false);
+  },[dispatch, setIsLoading, setLoadingError]);
+
+  useEffect(()=>{
+    const willFocusSubscription = props.navigation.addListener('willFocus', loadProducts); //doing this, cuz drawer doesnt re-render when navigation changes
+
+    return () => {    //this is a clean up return, it will execute when the component gets destroyed and at every cicle end
+      willFocusSubscription.remove();
+    };
+  },[loadProducts]);
+
+  // LOADING SCREEN 
+
+  if(loadingError){
+    return (
+      <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
+        <Text>Someting went wrong...</Text>
+        <Text style={DefaultStyle.textHighlight}> {loadingError} </Text>
+        <Button
+          title='Try Again'
+          color={Colors.secondary}
+          onPress={loadProducts}
+        />
+      </View>
+    );
+  }
+
+  if(isLoading){
+    return (
+      <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
+        <ActivityIndicator size='large' color={Colors.secondary}/>
+      </View>
+    );
+  }else{
+    if(products.length === 0 || isNaN(products.length)){
+      return(
+        <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
+          <Text>Nothing to see here</Text>
+          <Text style={DefaultStyle.textHighlight}>Maybe you could add some!</Text>
+        </View>
+      );
+    }
+  }
+
+  // DEFAULT SCREEN
   return (
     <View style={DefaultStyle.screen}>
       <FlatList 

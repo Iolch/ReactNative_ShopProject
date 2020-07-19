@@ -8,7 +8,8 @@ import Navigator from './navigators/mainNavigations';
 import {enableScreens} from 'react-native-screens';
 
 //redux imports
-import {createStore, combineReducers} from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import ReduxThunk from 'redux-thunk'; //this middleware allow us to use assync functions, using to control http requests
 import {Provider} from 'react-redux';
 
 // import reducers
@@ -25,7 +26,7 @@ const rootReducer = combineReducers({
   orderReducer: OrderReducer
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const App = () => {
   return (

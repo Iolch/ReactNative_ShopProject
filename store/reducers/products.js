@@ -1,23 +1,38 @@
 import {PRODUCTS} from '../../data/dummy-data';
-import {ADD_PRODUCT, REMOVE_PRODUCT, UPDATE_PRODUCT} from '../actions/products';
+import {SET_PRODUCTS, ADD_PRODUCT, REMOVE_PRODUCT, UPDATE_PRODUCT} from '../actions/products';
 import Product from '../../models/product';
 
 const initialState = {
-    shopProducts: PRODUCTS,
+    shopProducts: [],
     userProducts: PRODUCTS.filter(product => product.ownerId === 'u1'),
 };
 const ProductsReducer = (state = initialState, action) => {
     
     switch(action.type){
+        case SET_PRODUCTS:
+            return{...state,
+                    shopProducts: action.products
+                    };
         case ADD_PRODUCT:
-            const newProduct = new Product(new Date().toString(), 'u1', action.productTitle, action.productImageURL,  action.productDescription, action.productPrice);
+            const newProduct = new Product( action.productId, 
+                                            'u1', 
+                                            action.productTitle, 
+                                            action.productImageURL, 
+                                            action.productDescription, 
+                                            action.productPrice);
+
             return {...state, 
                     userProducts: state.userProducts.concat(newProduct), 
                     shopProducts: state.shopProducts.concat(newProduct),
                     };
         case UPDATE_PRODUCT:
             const removedProduct = state.shopProducts.find((product) => product.id === action.productId);
-            const updatedProduct = new Product(removedProduct.id, removedProduct.ownerId, action.productTitle, action.productImageURL,  action.productDescription, removedProduct.price);
+            const updatedProduct = new Product( removedProduct.id, 
+                                                removedProduct.ownerId, 
+                                                action.productTitle, 
+                                                action.productImageURL, 
+                                                action.productDescription, 
+                                                removedProduct.price);
             
             const newShopProducts = state.shopProducts.filter((product) => product.id !== removedProduct.id);
             const newUserProducts = state.userProducts.filter((product) => product.id !== removedProduct.id);
