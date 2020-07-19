@@ -37,7 +37,7 @@ const OrderItem = (props) => {
             </View>
             <View style={styles.cardDetail}>
                 <Text style={DefaultStyles.textHighlight}>${totalAmount}</Text>
-                {/* <Text>{date}</Text> */}
+                <Text style={{color:'#cccccc'}}>{date.split('T')[0]}</Text>
             </View>
         </View>
     );
@@ -50,9 +50,11 @@ const styles = StyleSheet.create({
         maxHeight: 200,
         justifyContent:'flex-end',
         marginVertical: 10,
+        borderRadius:2,
+        elevation: 5,
     },
     container:{
-        flex:1,
+        width:'100%',
         backgroundColor:'#000'
     },
     cardDetail:{

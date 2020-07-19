@@ -33,8 +33,8 @@ const CartItem = (props) => {
     return (
         <View style={styles.container}>
             <Text>{quantity}</Text>
-            <Text>{title}</Text>
-            <Text>{total}</Text>
+            <Text style={{fontWeight:'bold'}}>{title}</Text>
+            <Text style={{fontWeight:'bold', color:Colors.secondary}}>${total}</Text>
             {removeButton}
         </View>
     );
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     container:{
         backgroundColor: '#fff',
         padding: 20,
-        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'

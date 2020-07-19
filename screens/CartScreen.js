@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Button,
   FlatList,
@@ -22,6 +23,7 @@ import { addOrder } from '../store/actions/orders';
 
 
 const CartScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const products = useSelector(state => {
     const transformedCardItems = [];
     
@@ -48,16 +50,23 @@ const CartScreen = (props) => {
   const clearCartHandler = () => {
     dispatch(clearCart());
   }
-  const placeOrderHandler = () => {
+  const placeOrderHandler = async () => {
       if(products.length >= 1){
-        dispatch(addOrder(products, totalAmount));
-        clearCartHandler();
-        Alert.alert(
-          'Your order was a success!', 
-          'We are taking you to your orders list.',
-          [{text:'Ok', style:'cancel'}]
-        );
-        props.navigation.navigate({routeName:'OrdersRoute'});
+
+        try{
+          setIsLoading(true);
+          await dispatch(addOrder(products, totalAmount));
+          setIsLoading(false);
+          clearCartHandler();
+          props.navigation.navigate({routeName:'OrdersRoute'});
+
+        }catch(err){
+          Alert.alert(
+            'We had a problem.', 
+            'Are you connected to the intenet?',
+            [{text:'Ok', style:'cancel'}]
+          );
+        } 
       }else{
         Alert.alert(
         'Soon you can order!', 
@@ -83,7 +92,8 @@ const CartScreen = (props) => {
   let content = <View style={DefaultStyle.full}><Text>No products</Text></View>;
   if(products.length > 0){
     content = ( 
-                <View>
+              <View>
+                <View style={DefaultStyle.card}>
                   <View style={{...DefaultStyle.row, marginVertical:0, paddingHorizontal: 15}}>
                     <Text style={DefaultStyle.textHighlight}>Qanty.</Text>
                     <Text style={DefaultStyle.textHighlight}>Prodc.</Text>
@@ -91,17 +101,22 @@ const CartScreen = (props) => {
                     <Text style={DefaultStyle.textHighlight}>Remove</Text>
                   </View>
                   <FlatList keyExtractor={(item,index) => item.id} data={products} renderItem={renderCartProduct}/>
-                  <View style={styles.trashContainer}>
-                    <Button title='Clear Cart' color={Colors.secondary} onPress={clearCartHandler}/>
-                  </View>
                 </View>
+                <View style={styles.trashContainer}>
+                  <Button title='Clear Cart' color={Colors.secondary} onPress={clearCartHandler}/>
+                </View>
+              </View>
               );
   }
   return (
       <View>
         <View style={DefaultStyle.row}>
           <Text style={DefaultStyle.textHighlight}>Total: {Math.round(totalAmount.toFixed(2)*100)/100}</Text>
-          <Button color={Colors.secondary} title='Place Order' onPress={placeOrderHandler}/>
+          <View style={{flexDirection: 'row', justifyContent:'flex-end'}}>
+            {isLoading ? <ActivityIndicator size='small' color={Colors.secondary}/>: null}
+            <Button color={Colors.secondary} title='Place Order' onPress={placeOrderHandler}/>
+          </View>
+          
         </View>
         {content}
         

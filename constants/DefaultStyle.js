@@ -5,6 +5,14 @@ import {
 import Colors from '../constants/Colors';
 
   export default StyleSheet.create({
+    card:{
+      backgroundColor: '#fff',
+      width: '100%',
+      justifyContent:'flex-end',
+      marginVertical: 10,
+      borderRadius:2,
+      elevation: 5,
+    },
     screen:{
         flex: 1,
         padding:20,
