@@ -29,6 +29,7 @@ import {fetchProducts} from '../store/actions/products';
 const ShopScreen = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingError, setLoadingError] = useState('');
   
   let products = useSelector(state => state.productsReducer.shopProducts);
@@ -58,13 +59,13 @@ const ShopScreen = (props) => {
 
   const loadProducts = useCallback(async () => {  //again, we could use then/catch in here
     setLoadingError(null);
-    setIsLoading(true);
+    setIsRefreshing(true);
     try{
       await dispatch(fetchProducts());
     }catch(err){
       setLoadingError(err.message);
     }
-    setIsLoading(false);
+    setIsRefreshing(false);
   },[dispatch, setIsLoading, setLoadingError]);
 
   useEffect(()=>{
@@ -76,7 +77,11 @@ const ShopScreen = (props) => {
   },[loadProducts]);
 
   useEffect(()=>{   //this needs to be here, cuz in first exec, the function above doesnt get triggered
-    loadProducts();
+    
+    setIsLoading(true);
+    loadProducts().then(()=>{
+      setIsLoading(false);
+    });
   },[loadProducts]);
 
   // LOADING SCREEN 
@@ -107,6 +112,8 @@ const ShopScreen = (props) => {
   return (
     <View style={DefaultStyle.screen}>
       <FlatList 
+        onRefresh={loadProducts}
+        refreshing={isRefreshing}
         data={products} 
         renderItem={renderProductItem}
       />

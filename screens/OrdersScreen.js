@@ -23,6 +23,7 @@ import DefaultStyle from '../constants/DefaultStyle';
 
 const OrdersScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingError, setLoadingError] = useState('');
 
    const orders = useSelector((state) => state.orderReducer.orders);
@@ -38,13 +39,13 @@ const OrdersScreen = (props) => {
   
   const loadOrders = useCallback(async () => {
       setLoadingError(null);
-      setIsLoading(true);
+      setIsRefreshing(true);
       try{
         await dispatch(fetchOrders());
       }catch(err){
         setLoadingError(err.message);
       }
-      setIsLoading(false);
+      setIsRefreshing(false);
   },[dispatch, setIsLoading, setLoadingError]);
 
   useEffect(()=>{
@@ -56,7 +57,12 @@ const OrdersScreen = (props) => {
   },[loadOrders]);
 
   useEffect(()=>{   //this needs to be here, cuz in first exec, the function above doesnt get triggered
-    loadOrders();
+    
+    setIsLoading(true);
+    loadOrders().then(()=>{
+      setIsLoading(false);
+    });
+
   },[loadOrders]);
 
   if(loadingError){
@@ -75,7 +81,11 @@ const OrdersScreen = (props) => {
   }
   return (
     <View style={{...DefaultStyle.screen, alignItems:'center'}}>
-      <FlatList data={orders} renderItem={renderOrderItem}/>
+      <FlatList 
+        onRefresh={loadOrders}
+        refreshing={isRefreshing}
+        data={orders} 
+        renderItem={renderOrderItem}/>
     </View>
   );
 };

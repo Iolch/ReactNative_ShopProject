@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Alert,
   Button,
@@ -23,11 +23,14 @@ import {useSelector, useDispatch} from 'react-redux';
 import {removeProduct} from '../store/actions/products';
 
 const ProductsUserScreen = (props) => {
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const userProducts = useSelector((state) => state.productsReducer.userProducts);
   const dispatch = useDispatch();
   const onEditHandler = (id, title) => {
     props.navigation.navigate({routeName: 'ProductsEditRoute', params:{productId: id, productTitle: title}});
   };
+
   const onDeleteHandler = (id) => {
     Alert.alert(
       'You sure?', 
@@ -38,6 +41,11 @@ const ProductsUserScreen = (props) => {
       ]
     );
   };
+  const loadUserProducts = useCallback(() => {
+    setIsRefreshing(true);
+    userProducts = useSelector((state) => state.productsReducer.userProducts);
+    setIsRefreshing(false);
+  },[userProducts]);
 
   const renderUserProductsItem = (itemData) => {    
     return (<ProductItem 
@@ -55,7 +63,11 @@ const ProductsUserScreen = (props) => {
   };
   return (
     <View style={DefaultStyle.screen}>
-      <FlatList data={userProducts} renderItem={renderUserProductsItem}/>
+      <FlatList 
+        onRefresh={loadUserProducts}
+        refreshing={isRefreshing}
+        data={userProducts} 
+        renderItem={renderUserProductsItem}/>
     </View>
 
   );
