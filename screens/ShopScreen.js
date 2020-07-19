@@ -1,10 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {
-  ActivityIndicator,  //built-in spinner
   Button,
   FlatList,
-  StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -12,6 +9,8 @@ import {
 // components imports
 import {HeaderButton} from '../components/HeaderButton';
 import ProductItem from '../components/ProductItem';
+import LoadingScene from '../components/LoadingScene';
+import MessageScene from '../components/MessageScene';
 
 // constants import 
 import DefaultStyle from '../constants/DefaultStyle';
@@ -76,35 +75,30 @@ const ShopScreen = (props) => {
     };
   },[loadProducts]);
 
+  useEffect(()=>{   //this needs to be here, cuz in first exec, the function above doesnt get triggered
+    loadProducts();
+  },[loadProducts]);
+
   // LOADING SCREEN 
 
   if(loadingError){
     return (
-      <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
-        <Text>Someting went wrong...</Text>
-        <Text style={DefaultStyle.textHighlight}> {loadingError} </Text>
+      <MessageScene title='Something went wrong...' message={loadingError}>
         <Button
           title='Try Again'
           color={Colors.secondary}
           onPress={loadProducts}
         />
-      </View>
+      </MessageScene>
     );
   }
 
   if(isLoading){
-    return (
-      <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
-        <ActivityIndicator size='large' color={Colors.secondary}/>
-      </View>
-    );
+    return (<LoadingScene />);
   }else{
     if(products.length === 0 || isNaN(products.length)){
       return(
-        <View style={{...DefaultStyle.full, backgroundColor:Colors.light}}>
-          <Text>Nothing to see here</Text>
-          <Text style={DefaultStyle.textHighlight}>Maybe you could add some!</Text>
-        </View>
+        <MessageScene title='Nothing to see here' message='Maybe you could add some!'/>
       );
     }
   }
@@ -128,8 +122,5 @@ ShopScreen.navigationOptions = (navigationData) =>{
   };
 };
 
-const styles = StyleSheet.create({
-
-});
 
 export default ShopScreen;

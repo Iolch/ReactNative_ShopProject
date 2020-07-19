@@ -13,7 +13,7 @@ export const fetchProducts = () => {
             const responseData = await response.json();
 
             if(!response.ok){
-                throw new Error('Somethig is weird.');
+                throw new Error('Problems with the consult.');
             }
 
             // so this is like this because of the way we retrieve the data from firedatabase
@@ -39,7 +39,21 @@ export const fetchProducts = () => {
 };
 
 export const removeProduct = (id) => {
-    return {type: REMOVE_PRODUCT, productId: id};
+    return async dispatch => {
+        const response = await fetch(Strings.datasetUrl+`products/${id}.json`,{
+            method:'DELETE',
+        }); 
+        
+        if(!response.ok){
+            throw new Error ('Problems with the consult');
+        }
+
+        dispatch({
+            type: REMOVE_PRODUCT, 
+            productId: id
+        });
+    };
+    // return {type: REMOVE_PRODUCT, productId: id};
 };
 export const addProduct = (title, imageUrl, price, description ) => {
     return async dispatch => {    //because we're using redux-thunk
@@ -65,5 +79,24 @@ export const addProduct = (title, imageUrl, price, description ) => {
     // return {type: ADD_PRODUCT, productTitle: title, productImageURL: imageUrl, productPrice: price, productDescription: description};
 };
 export const updateProduct = (id, title, imageUrl, description) => {
-    return {type: UPDATE_PRODUCT, productId: id, productTitle: title, productImageURL: imageUrl, productDescription: description};
+    return async dispatch => {
+        const response = await fetch(Strings.datasetUrl+`products/${id}.json`, {
+            method:'PATCH',   //PUT fully overwrite and PATCH merge with the one there
+            headers:{'Content-Type': 'application/json'},
+            body: JSON.stringify({title, imageUrl, description})
+        });
+        
+        if(!response.ok){
+            throw new Error ('Something went wrong');
+        }
+
+        dispatch({
+            type: UPDATE_PRODUCT, 
+            productId: id, 
+            productTitle: title, 
+            productImageURL: imageUrl, 
+            productDescription: description
+        });
+    };
+    // return {type: UPDATE_PRODUCT, productId: id, productTitle: title, productImageURL: imageUrl, productDescription: description};
 };

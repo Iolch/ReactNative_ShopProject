@@ -4,14 +4,15 @@ import Product from '../../models/product';
 
 const initialState = {
     shopProducts: [],
-    userProducts: PRODUCTS.filter(product => product.ownerId === 'u1'),
+    userProducts: [],
 };
 const ProductsReducer = (state = initialState, action) => {
     
     switch(action.type){
         case SET_PRODUCTS:
             return{...state,
-                    shopProducts: action.products
+                    shopProducts: action.products,
+                    userProducts: action.products.filter(product => product.ownerId === 'u1')
                     };
         case ADD_PRODUCT:
             const newProduct = new Product( action.productId, 

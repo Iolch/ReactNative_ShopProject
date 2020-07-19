@@ -10,10 +10,7 @@ import {
 // components import
 import {HeaderButton} from '../components/HeaderButton';
 import FormInput from '../components/FormInput';
-
-// constants import 
-import DefaultStyle from '../constants/DefaultStyle';
-import Colors from '../constants/Colors';
+import LoadingScene from '../components/LoadingScene';
 
 // custom imports
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -43,6 +40,10 @@ const formReducer = (state, action) => {
 };
 
 const ProductsEditScreen = (props) => {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState('');
+
   const productId = props.navigation.getParam('productId');
   const product = useSelector((state)=>state.productsReducer.userProducts.find((product)=> product.id === productId));
 
@@ -71,25 +72,55 @@ const ProductsEditScreen = (props) => {
   // other functions
   const dispatch = useDispatch();
   const onSubmitHandler = useCallback(
-    () => {
+    async () => {
+
       if( !formState.formIsValid) {
           Alert.alert('Wrong information', 'Please check again', [{text:'Ok'} ]);
           return;
       }
+      setLoadingError(null);
+      setIsLoading(true);
 
-      if(product){
-        dispatch(updateProduct(productId, formState.inputValues.title, formState.inputValues.imageUrl, formState.inputValues.description));      
-      }else{
-        dispatch(addProduct(formState.inputValues.title, formState.inputValues.imageUrl, +formState.inputValues.price, formState.inputValues.description));
-      }
+      try{
+        if(product){
+            await dispatch(updateProduct(productId, 
+                                         formState.inputValues.title, 
+                                         formState.inputValues.imageUrl, 
+                                         formState.inputValues.description));   
+          
+        }else{
+            await dispatch(addProduct(formState.inputValues.title, 
+                                      formState.inputValues.imageUrl, 
+                                      +formState.inputValues.price, 
+                                      formState.inputValues.description));
+        }
       props.navigation.goBack();
+
+      }catch(err){
+        setLoadingError(err.message);
+      }   
+
+      setIsLoading(false);
+
     },[dispatch, formState, productId]
   );
-
+  
+  useEffect(()=>{
+    if(loadingError){
+      Alert.alert('An error occurred!', loadingError, [{text:'Ok'} ]);
+    }
+  },[loadingError]);
   useEffect(()=>{
     props.navigation.setParams({onSubmit: onSubmitHandler});
   }, [onSubmitHandler]);
 
+
+  // LOADING SCREEN
+  if(isLoading){
+    return (<LoadingScene />);
+  }
+  
+  // DEFAULT SCREEN
   return (
     <KeyboardAvoidingView style={{flex:1, backgroundColor:'#fff'}} behavior="padding" keyboardVerticalOffset={30}>
       <ScrollView>
