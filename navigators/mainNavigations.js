@@ -16,6 +16,7 @@ import ShopScreen from '../screens/ShopScreen';
 //custom import
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import AuthScreen from '../screens/AuthScreen';
 
 const ShopNavigatorStack = createStackNavigator({
     ShopRoute: ShopScreen,
@@ -44,7 +45,9 @@ const OrdersNavigatorStack = createStackNavigator({
         drawerIcon: (drawerConfig) =>  <Icon name="check" size={23} color={Colors.primary} />
     },
 });
-
+const AuthNavigator = createStackNavigator({
+    AuthRoute: AuthScreen,
+});
 const MainNavigator = createDrawerNavigator({
     ShopMenuRoute: ShopNavigatorStack,
     OrdersMenuRoute: OrdersNavigatorStack,
@@ -55,4 +58,4 @@ const MainNavigator = createDrawerNavigator({
     }
 });
 
-export default createAppContainer(MainNavigator);
+export default createAppContainer(AuthNavigator);

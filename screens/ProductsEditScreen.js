@@ -18,6 +18,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 //redux
 import {useSelector, useDispatch} from 'react-redux';
 import {addProduct, updateProduct} from '../store/actions/products';
+import DefaultStyle from '../constants/DefaultStyle';
 
 const FORM_UPDATE = 'UPDATE';
 const formReducer = (state, action) => {
@@ -122,8 +123,8 @@ const ProductsEditScreen = (props) => {
   
   // DEFAULT SCREEN
   return (
-    <KeyboardAvoidingView style={{flex:1, backgroundColor:'#fff'}} behavior="padding" keyboardVerticalOffset={30}>
-      <ScrollView>
+    <KeyboardAvoidingView style={{flex:1}}>
+      <ScrollView style={{...DefaultStyle.screen, backgroundColor:'#fff'}}>
         <View style={styles.form}>
             <FormInput 
               id='title'
