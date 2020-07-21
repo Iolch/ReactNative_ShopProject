@@ -7,8 +7,10 @@ export const REMOVE_PRODUCT = 'REMOVE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try{
+            const userId = getState().authReducer.userId;
+
             const response = await fetch(Strings.datasetUrl+'products.json');     //the default is a method get
             const responseData = await response.json();
 
@@ -21,7 +23,7 @@ export const fetchProducts = () => {
             let loadedProducts = [];
             for (const key in responseData){
                 loadedProducts.push(new Product(key,
-                                                'u1',
+                                                userId,
                                                 responseData[key].title,
                                                 responseData[key].imageUrl,
                                                 responseData[key].description,
@@ -29,7 +31,8 @@ export const fetchProducts = () => {
             }
             dispatch({
                 type: SET_PRODUCTS,
-                products: loadedProducts
+                products: loadedProducts,
+                userId:userId,
             });
         }catch (err){
             throw err;
@@ -39,8 +42,11 @@ export const fetchProducts = () => {
 };
 
 export const removeProduct = (id) => {
-    return async dispatch => {
-        const response = await fetch(Strings.datasetUrl+`products/${id}.json`,{
+    return async (dispatch, getState) => {
+        
+        const token = getState().authReducer.token;
+
+        const response = await fetch(Strings.datasetUrl+`products/${id}.json?auth=${token}`,{
             method:'DELETE',
         }); 
         
@@ -56,18 +62,22 @@ export const removeProduct = (id) => {
     // return {type: REMOVE_PRODUCT, productId: id};
 };
 export const addProduct = (title, imageUrl, price, description ) => {
-    return async dispatch => {    //because we're using redux-thunk
+    return async (dispatch, getState) => {    //because we're using redux-thunk
+        
+        const token = getState().authReducer.token;
+        const userId = getState().authReducer.userId;
 
         // now we use async functions in here! :D
-        const response = await fetch(Strings.datasetUrl+'products.json', {  // this could be also done with then/catch
+        const response = await fetch(Strings.datasetUrl+`products.json?auth=${token}`, {  // this could be also done with then/catch
             method: 'POST', 
             headers:{'Content-Type': 'application/json'},
-            body: JSON.stringify({title, imageUrl, price, description})
+            body: JSON.stringify({title, imageUrl, price, description, userId})
         }); 
         const responseData = await response.json();
 
         dispatch ({
             type: ADD_PRODUCT, 
+            userId: userId,
             productId: responseData.name,
             productTitle: title, 
             productImageURL: imageUrl, 
@@ -79,8 +89,11 @@ export const addProduct = (title, imageUrl, price, description ) => {
     // return {type: ADD_PRODUCT, productTitle: title, productImageURL: imageUrl, productPrice: price, productDescription: description};
 };
 export const updateProduct = (id, title, imageUrl, description) => {
-    return async dispatch => {
-        const response = await fetch(Strings.datasetUrl+`products/${id}.json`, {
+    return async (dispatch, getState) => {
+
+        const token = getState().authReducer.token;
+
+        const response = await fetch(Strings.datasetUrl+`products/${id}.json?auth=${token}`, {
             method:'PATCH',   //PUT fully overwrite and PATCH merge with the one there
             headers:{'Content-Type': 'application/json'},
             body: JSON.stringify({title, imageUrl, description})

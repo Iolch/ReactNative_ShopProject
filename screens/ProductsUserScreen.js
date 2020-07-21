@@ -24,8 +24,7 @@ import {removeProduct} from '../store/actions/products';
 
 const ProductsUserScreen = (props) => {
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const userProducts = useSelector((state) => state.productsReducer.userProducts);
+  let userProducts = useSelector((state) => state.productsReducer.userProducts);
   const dispatch = useDispatch();
   const onEditHandler = (id, title) => {
     props.navigation.navigate({routeName: 'ProductsEditRoute', params:{productId: id, productTitle: title}});
@@ -41,11 +40,6 @@ const ProductsUserScreen = (props) => {
       ]
     );
   };
-  const loadUserProducts = useCallback(() => {
-    setIsRefreshing(true);
-    userProducts = useSelector((state) => state.productsReducer.userProducts);
-    setIsRefreshing(false);
-  },[userProducts]);
 
   const renderUserProductsItem = (itemData) => {    
     return (<ProductItem 
@@ -64,8 +58,6 @@ const ProductsUserScreen = (props) => {
   return (
     <View style={DefaultStyle.screen}>
       <FlatList 
-        onRefresh={loadUserProducts}
-        refreshing={isRefreshing}
         data={userProducts} 
         renderItem={renderUserProductsItem}/>
     </View>

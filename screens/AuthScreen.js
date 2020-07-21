@@ -1,5 +1,6 @@
 import React, { useCallback, useReducer, useState } from 'react';
 import {
+    ActivityIndicator,
     Alert,
     ScrollView,
     StyleSheet,
@@ -58,44 +59,36 @@ const AuthScreen = (props) => {
     });
 
     const dispatch = useDispatch();
-    const onLoginHandler = useCallback(async() => {
-        if( !formState.formIsValid) {
-            Alert.alert('An error ocurred!', 'The fields can not be empty.', [{text:'Ok'} ]);
-            return;
-        }
-        setIsLoading(true);
-        try{
-            await dispatch(loginUser(formState.inputValues.email, formState.inputValues.password));
-        }catch(err){
-            Alert.alert('An error ocurred!', err.message, [{text:'Ok'} ]);
-        }
-        setIsLoading(false);
-    },[dispatch, setIsLoading, formState]);
 
-    const onSingUpHandler = useCallback(async () => {
+    const onSubmitHandler = useCallback(async (mode) => {
         if(!formState.formIsValid) {
             Alert.alert('An error ocurred!', 'The fields can not be empty.', [{text:'Ok'} ]);
             return;
         };
         
+        let action = null;
+        if(mode === 'singup'){
+            action = singUpUser(formState.inputValues.email, formState.inputValues.password);
+        }else{
+            action = loginUser(formState.inputValues.email, formState.inputValues.password);
+        }
+
         setIsLoading(true);
         try{
-            await dispatch(singUpUser(formState.inputValues.email, formState.inputValues.password));
+            await dispatch(action);
+            props.navigation.navigate('ShopDrawer');
         }catch(err){
-            Alert.alert('An error ocurred!', err.message, [{text:'Ok'} ]);
+            Alert.alert('An error ocurred!', err.message, [{text:'Ok'} ]);    
+            setIsLoading(false);
         }
-        setIsLoading(false);
     },[dispatch, setIsLoading, formState]);
+
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValid) => {
         dispatchFormState({type:FORM_UPDATE, value: inputValue, isValid: inputValid, input: inputIdentifier});
     }, [dispatchFormState]);
 
-    if(isLoading){
-        return(
-            <LoadingScene />
-        );
-    }
+    
     return (
         <KeyboardAvoidingView style={{flex:1}}>
             <ScrollView style={{...DefaultStyle.screen}}>
@@ -122,9 +115,12 @@ const AuthScreen = (props) => {
                             onInputChange={inputChangeHandler}
                             required
                         />
+                        
+                        {isLoading ? <ActivityIndicator size='small' color={Colors.secondary}/> : null}
+
                         <View style={DefaultStyle.row}>
-                            <View style={styles.button}><Button title='Sing up' color={Colors.secondary} onPress={onSingUpHandler}/></View>
-                            <View style={styles.button}><Button title='Login' color={Colors.primary} onPress={onLoginHandler}/></View>
+                            <View style={styles.button}><Button title='Sing up' color={Colors.secondary} onPress={()=>onSubmitHandler('singup')}/></View>
+                            <View style={styles.button}><Button title='Login' color={Colors.primary} onPress={()=>onSubmitHandler('login')}/></View>
                         </View>
                     </View>
                 </View>

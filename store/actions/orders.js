@@ -7,14 +7,16 @@ export const SET_ORDERS = 'SET_ORDERS';
 
 export const fetchOrders = () => {
     
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try{
-            const response = await fetch(Strings.datasetUrl+'orders/u1.json');     //the default is a method get
+            const token = getState().authReducer.token;
+            const userId = getState().authReducer.userId;
+
+            const response = await fetch(Strings.datasetUrl+`orders/${userId}.json?auth=${token}`);     //the default is a method get
             const responseData = await response.json();
             if(!response.ok){
                 throw new Error('Problems with the consult.');
             }
-
             // so this is like this because of the way we retrieve the data from firedatabase
 
             let loadedOrders = [];
@@ -24,35 +26,40 @@ export const fetchOrders = () => {
                                             responseData[key].totalAmount, 
                                             responseData[key].date));
             }
-           
             dispatch({
                 type:SET_ORDERS, 
                 orders:loadedOrders
             });
         }catch (err){
+            console.log(err);
             throw err;
         }
         
     };
 };
 export const addOrder = (cartItems, totalAmount) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try{
-            const date = new Date();
-            const response = await fetch(Strings.datasetUrl+'orders/u1.json',{
+            const token = getState().authReducer.token;
+            const userId = getState().authReducer.userId;
+            
+            const date = new Date();    
+            const response = await fetch(Strings.datasetUrl+`orders/${userId}.json?auth=${token}`,{
                 method: 'POST', 
                 headers:{'Content-Type': 'application/json'},
                 body: JSON.stringify({cartItems, totalAmount, date: date.toISOString() })
 
             });
             if(!response.ok){
+                const errorData = await response.json();
                 throw new Error ('Something went wrong');
             }
             const responseData = await response.json();
+           
 
             dispatch({
-                id: responseData.name,
                 type: ADD_ORDER, 
+                id: responseData.name,
                 items: cartItems, 
                 totalAmount: totalAmount,
                 date: date

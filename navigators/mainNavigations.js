@@ -1,22 +1,25 @@
 import React from 'react';
 
 // navigators imports
-import { createAppContainer, Header } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, Header } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
 //screen imports
+
+import AuthScreen from '../screens/AuthScreen';
 import CartScreen from '../screens/CartScreen';
 import OrdersScreen from '../screens/OrdersScreen';
 import ProductsUserScreen from '../screens/ProductsUserScreen';
 import ProductsDetailScreen from '../screens/ProductsDetailScreen';
 import ProductsEditScreen from '../screens/ProductsEditScreen';
 import ShopScreen from '../screens/ShopScreen';
+import StartupScreen from '../screens/StartupScreen';
+
 
 //custom import
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import AuthScreen from '../screens/AuthScreen';
 
 const ShopNavigatorStack = createStackNavigator({
     ShopRoute: ShopScreen,
@@ -45,10 +48,10 @@ const OrdersNavigatorStack = createStackNavigator({
         drawerIcon: (drawerConfig) =>  <Icon name="check" size={23} color={Colors.primary} />
     },
 });
-const AuthNavigator = createStackNavigator({
+const AuthNavigatorStack = createStackNavigator({
     AuthRoute: AuthScreen,
 });
-const MainNavigator = createDrawerNavigator({
+const ShopNavigatorDrawer = createDrawerNavigator({
     ShopMenuRoute: ShopNavigatorStack,
     OrdersMenuRoute: OrdersNavigatorStack,
     ProductsUserMenuRoute: ProductsNavigatorStack
@@ -58,4 +61,10 @@ const MainNavigator = createDrawerNavigator({
     }
 });
 
-export default createAppContainer(AuthNavigator);
+const MainNavigator = createSwitchNavigator({
+    StartupRoute: StartupScreen,
+    AuthRoute: AuthNavigatorStack,
+    ShopDrawer: ShopNavigatorDrawer
+});
+
+export default createAppContainer(MainNavigator);

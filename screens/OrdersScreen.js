@@ -26,8 +26,8 @@ const OrdersScreen = (props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingError, setLoadingError] = useState('');
 
-   const orders = useSelector((state) => state.orderReducer.orders);
-
+  let orders = useSelector((state) => state.orderReducer.orders);
+  
   const renderOrderItem = (itemData) =>{
     return (<OrderItem 
               id={itemData.item.id}
@@ -41,6 +41,7 @@ const OrdersScreen = (props) => {
       setLoadingError(null);
       setIsRefreshing(true);
       try{
+        console.log('helo');
         await dispatch(fetchOrders());
       }catch(err){
         setLoadingError(err.message);

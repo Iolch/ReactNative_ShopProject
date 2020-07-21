@@ -13,14 +13,16 @@ import ReduxThunk from 'redux-thunk'; //this middleware allow us to use assync f
 import {Provider} from 'react-redux';
 
 // import reducers
-import ProductsReducer from './store/reducers/products';
+import AuthReducer from './store/reducers/auth';
 import CartReducer from './store/reducers/cart';
+import ProductsReducer from './store/reducers/products';
 import OrderReducer from './store/reducers/orders';
 
 
 enableScreens();
 
 const rootReducer = combineReducers({
+  authReducer: AuthReducer,
   productsReducer: ProductsReducer,
   cartReducer: CartReducer,
   orderReducer: OrderReducer

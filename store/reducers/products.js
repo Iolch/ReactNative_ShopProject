@@ -12,16 +12,15 @@ const ProductsReducer = (state = initialState, action) => {
         case SET_PRODUCTS:
             return{...state,
                     shopProducts: action.products,
-                    userProducts: action.products.filter(product => product.ownerId === 'u1')
+                    userProducts: action.products.filter(product => product.ownerId === action.userId)
                     };
         case ADD_PRODUCT:
             const newProduct = new Product( action.productId, 
-                                            'u1', 
+                                            action.userId, 
                                             action.productTitle, 
                                             action.productImageURL, 
                                             action.productDescription, 
-                                            action.productPrice);
-
+                                            action.productPrice)
             return {...state, 
                     userProducts: state.userProducts.concat(newProduct), 
                     shopProducts: state.shopProducts.concat(newProduct),
