@@ -4,7 +4,8 @@ import React from 'react';
 import {View} from 'react-native';
 
 // navigator import
-import Navigator from './navigators/mainNavigations';
+// import Navigator from './navigators/mainNavigations';
+import NavigationContainer from './navigators/navigationContainer';
 import {enableScreens} from 'react-native-screens';
 
 //redux imports
@@ -33,7 +34,7 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 const App = () => {
   return (
     <Provider store ={store}> 
-      <Navigator/>
+      <NavigationContainer/>
     </Provider>
   );
 };

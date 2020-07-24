@@ -8,6 +8,8 @@ target 'ShopProject' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'ShopProjectTests' do
     inherit! :complete
     # Pods for testing

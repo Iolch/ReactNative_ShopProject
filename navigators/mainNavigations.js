@@ -1,9 +1,10 @@
 import React from 'react';
+import {Button, View, SafeAreaView} from 'react-native';
 
 // navigators imports
 import { createAppContainer, createSwitchNavigator, Header } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 
 //screen imports
 
@@ -20,6 +21,11 @@ import StartupScreen from '../screens/StartupScreen';
 //custom import
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+
+//redux imports
+import {useDispatch} from 'react-redux';
+import {logoutUser} from '../store/actions/auth';
+
 
 const ShopNavigatorStack = createStackNavigator({
     ShopRoute: ShopScreen,
@@ -51,6 +57,7 @@ const OrdersNavigatorStack = createStackNavigator({
 const AuthNavigatorStack = createStackNavigator({
     AuthRoute: AuthScreen,
 });
+
 const ShopNavigatorDrawer = createDrawerNavigator({
     ShopMenuRoute: ShopNavigatorStack,
     OrdersMenuRoute: OrdersNavigatorStack,
@@ -58,12 +65,31 @@ const ShopNavigatorDrawer = createDrawerNavigator({
 },{
     contentOptions:{
         activeTintColor: Colors.primary
+    },
+    contentComponent: (props) => {
+        const dispatch = useDispatch();
+        return(
+            <View style={{flex:1}}>
+                <SafeAreaView forceInset={{top:'always', horizontal:'never'}}>
+                    <DrawerItems {...props} />
+                    <Button 
+                        title="Logout" 
+                        color={Colors.primary} 
+                        onPress={()=>{  
+                                        dispatch(logoutUser());
+                                        // props.navigation.navigate('AuthDrawerRoute');
+                                        // the navigation will be done at navigationContainer
+                                    }} 
+                    />
+                </SafeAreaView>
+            </View>
+        );
     }
 });
 
 const MainNavigator = createSwitchNavigator({
     StartupRoute: StartupScreen,
-    AuthRoute: AuthNavigatorStack,
+    AuthDrawerRoute: AuthNavigatorStack,
     ShopDrawer: ShopNavigatorDrawer
 });
 

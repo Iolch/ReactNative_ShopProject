@@ -23,7 +23,7 @@ const StartupScreen = (props) => {
         const tryLogin = async () =>{
             const userData = await AsyncStorage.getItem('authData');
             if(!userData) {
-                props.navigation.navigate('AuthRoute');
+                // props.navigation.navigate('AuthDrawerRoute');    //taken care of at navigationContainer
                 return;
             }
             const transformedData = JSON.parse(userData);
@@ -31,10 +31,11 @@ const StartupScreen = (props) => {
             
             const tokenExpirationDate = new Date(expirationDate);
             if(tokenExpirationDate <= new Date() || !token || !userId){
-                props.navigation.navigate('AuthRoute');
+                // props.navigation.navigate('AuthDrawerRoute'); //taken care of at navigationContainer
                 return;
             }
-            await dispatch(authenticateUser(token, userId));
+            const time = tokenExpirationDate.getTime() - new Date().getTime();
+            await dispatch(authenticateUser(token, userId, time));
             props.navigation.navigate('ShopRoute');
         };
         tryLogin();

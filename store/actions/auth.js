@@ -2,14 +2,17 @@ import Strings from '../../constants/Strings';
 
 import AsyncStorage from '@react-native-community/async-storage'; //this allow us to store data even when the app closes
 
+export const LOGOUT_USER = 'LOGOUT_USER';
 export const LOGIN_USER = 'LOGIN_USER';
 export const SINGUP_USER = 'SINGUP_USER';
 
-export const authenticateUser = (token, userId) => {
+let timer;
+export const authenticateUser = (token, userId, expirationDate) => {
     return async dispatch =>{
         dispatch({  type:LOGIN_USER, 
                     token: token, 
                     userId:userId});
+    // dispatch(setLogoutTimer(expirationDate));
     }; 
 };
 export const loginUser = (email, password) => {
@@ -30,8 +33,26 @@ export const loginUser = (email, password) => {
         dispatch({  type: LOGIN_USER, 
                     token: responseData.idToken, 
                     userId: responseData.localId});
+        
         const tokenExpirationDate = new Date((new Date()).getTime() + parseInt(responseData.expiresIn) * 1000);
         saveAuthData(responseData.idToken, responseData.localId, tokenExpirationDate);
+        // dispatch(setLogoutTimer(parseInt(responseData.exipiresIn)*1000));
+    };
+};
+
+export const logoutUser = () => {
+    clearLogoutTimer();
+    AsyncStorage.removeItem('authData');
+    return {type: LOGOUT_USER};
+};
+const clearLogoutTimer = () => {
+    if(timer) clearTimeout(timer);
+};
+const setLogoutTimer = (expirationTime) => {
+    return dispatch => {
+        timer = setTimeout(() => {
+            dispatch(logoutUser());
+        }, expirationTime);
     };
 };
 
@@ -55,6 +76,8 @@ export const singUpUser = (email, password) => {
                     userId: responseData.localId});
         const tokenExpirationDate = new Date(new Date().getTime() + parseInt(responseData.exipiresIn) * 1000);
         saveAuthData(responseData.idToken, responseData.localId, tokenExpirationDate);
+        // dispatch(setLogoutTimer(sparseInt(responseData.exipiresIn)*1000));
+        
     };
 };
 
